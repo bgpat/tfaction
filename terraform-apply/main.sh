@@ -2,6 +2,7 @@
 
 set -eu
 set -o pipefail
+set -x
 
 if [ -n "${S3_BUCKET_NAME_PLAN_FILE:-}" ]; then
 	github-comment exec \
