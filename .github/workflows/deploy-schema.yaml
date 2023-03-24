@@ -16,12 +16,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
     - run: pip install json-schema-for-humans
     - run: mkdir build
     - run: generate-schema-doc --expand-buttons --link-to-reused-ref schema build
 
-    - uses: peaceiris/actions-gh-pages@v3
+    - uses: peaceiris/actions-gh-pages@bd8c6b06eba6b3d25d72b7a1767993c0aeee42e7 # v3
       if: github.event_name != 'pull_request'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
