@@ -26,23 +26,52 @@ runs:
       working-directory: ${{steps.target-config.outputs.working_directory}}
 
     - run: cp ${{ github.action_path }}/tfmigrate.hcl .tfmigrate.hcl
+      if: steps.target-config.outputs.s3_bucket_name_tfmigrate_history != ''
+      shell: bash
+      working-directory: ${{steps.target-config.outputs.working_directory}}
+    - run: cp ${{ github.action_path }}/tfmigrate-gcs.hcl .tfmigrate.hcl
+      if: steps.target-config.outputs.gcs_bucket_name_tfmigrate_history != ''
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}
 
     - run: aqua init
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}
-    - run: aqua g -i open-policy-agent/conftest terraform-linters/tflint aquasecurity/tfsec hashicorp/terraform
+      if: env.TFACTION_SKIP_ADDING_AQUA_PACKAGES != 'true'
+
+    - run: aqua g -i open-policy-agent/conftest hashicorp/terraform
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}
+      if: env.TFACTION_SKIP_ADDING_AQUA_PACKAGES != 'true'
+
+    - run: aqua g -i terraform-linters/tflint
+      shell: bash
+      working-directory: ${{steps.target-config.outputs.working_directory}}
+      if: env.TFACTION_SKIP_ADDING_AQUA_PACKAGES != 'true' && steps.target-config.outputs.enable_tflint == 'true'
+
+    - run: aqua g -i aquasecurity/tfsec
+      shell: bash
+      working-directory: ${{steps.target-config.outputs.working_directory}}
+      if: env.TFACTION_SKIP_ADDING_AQUA_PACKAGES != 'true' && steps.target-config.outputs.enable_tfsec == 'true'
+
+    - run: aqua g -i aquasecurity/trivy
+      shell: bash
+      working-directory: ${{steps.target-config.outputs.working_directory}}
+      if: env.TFACTION_SKIP_ADDING_AQUA_PACKAGES != 'true' && steps.target-config.outputs.enable_trivy == 'true'
 
     - run: git add .
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}
 
     - run: git ls-files | xargs -n 1 sed -i 's|%%S3_BUCKET_NAME_TFMIGRATE_HISTORY%%|${{steps.target-config.outputs.s3_bucket_name_tfmigrate_history}}|g'
+      if: steps.target-config.outputs.s3_bucket_name_tfmigrate_history != ''
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}
+    - run: git ls-files | xargs -n 1 sed -i 's|%%GCS_BUCKET_NAME_TFMIGRATE_HISTORY%%|${{steps.target-config.outputs.gcs_bucket_name_tfmigrate_history}}|g'
+      if: steps.target-config.outputs.gcs_bucket_name_tfmigrate_history != ''
+      shell: bash
+      working-directory: ${{steps.target-config.outputs.working_directory}}
+
     - run: git ls-files | xargs -n 1 sed -i "s|%%TARGET%%|${TFACTION_TARGET}|g"
       shell: bash
       working-directory: ${{steps.target-config.outputs.working_directory}}

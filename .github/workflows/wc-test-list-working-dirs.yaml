@@ -1,0 +1,18 @@
+---
+name: test-list-working-dirs
+on: workflow_call
+
+jobs:
+  test-list-working-dirs:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: aquaproj/aqua-installer@36dc5833b04eb63f06e3bb818aa6b7a6e6db99a9 # v2.1.2
+        with:
+          aqua_version: v2.13.1
+      - uses: ./list-working-dirs
+        id: working_dirs
+        env:
+          TFACTION_CONFIG: list-working-dirs/tests/tfaction-root.yaml
+      - run: cat "${{ steps.working_dirs.outputs.file }}"

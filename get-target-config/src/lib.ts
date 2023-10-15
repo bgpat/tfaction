@@ -7,16 +7,18 @@ interface Config {
   working_directory_file: string | undefined
   target_groups: Array<TargetConfig>
   env: Record<string, string> | undefined
+  tfsec: TfsecConfig | undefined
+  trivy: TrivyConfig | undefined
+  tflint: TflintConfig | undefined
 }
 
 interface TargetConfig {
   target: string
   working_directory: string
   aws_region: string
-  s3_bucket_name_plan_file: string
   s3_bucket_name_tfmigrate_history: string
   template_dir: string
-  gcs_bucket_name_plan_file: string
+  gcs_bucket_name_tfmigrate_history: string
 
   aws_assume_role_arn: string | undefined
   gcp_service_account: string | undefined
@@ -30,6 +32,19 @@ interface TargetConfig {
   terraform_apply_config: JobConfig | undefined
   tfmigrate_apply_config: JobConfig | undefined
   env: Record<string, string> | undefined
+  tfsec: TfsecConfig | undefined
+}
+
+export interface TfsecConfig {
+  enabled: boolean
+}
+
+export interface TflintConfig {
+  enabled: boolean
+}
+
+export interface TrivyConfig {
+  enabled: boolean
 }
 
 export interface JobConfig {

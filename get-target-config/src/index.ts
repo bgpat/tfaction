@@ -33,11 +33,15 @@ try {
   core.setOutput('providers_lock_opts', '-platform=windows_amd64 -platform=linux_amd64 -platform=darwin_amd64');
   lib.setOutputs(['template_dir'], [targetConfig]);
 
+  core.setOutput('enable_tfsec', getBool(config, true, 'tfsec', 'enabled'));
+  core.setOutput('enable_tflint', getBool(config, true, 'tflint', 'enabled'));
+  core.setOutput('enable_trivy', getBool(config, false, 'trivy', 'enabled'));
+
+
   if (jobType == 'scaffold_working_dir') {
     lib.setOutputs([
-      's3_bucket_name_plan_file',
       's3_bucket_name_tfmigrate_history',
-      'gcs_bucket_name_plan_file',
+      'gcs_bucket_name_tfmigrate_history',
       'aws_region',
       'aws_assume_role_arn',
       'gcp_service_account',
@@ -49,9 +53,8 @@ try {
     const wdConfig = lib.readTargetConfig(path.join(workingDir, workingDirectoryFile));
     const jobConfig = lib.getJobConfig(wdConfig, isApply, jobType);
     lib.setOutputs([
-      's3_bucket_name_plan_file',
       's3_bucket_name_tfmigrate_history',
-      'gcs_bucket_name_plan_file',
+      'gcs_bucket_name_tfmigrate_history',
       'providers_lock_opts',
     ], [wdConfig, targetConfig, config]);
     lib.setOutputs([
@@ -65,4 +68,19 @@ try {
   }
 } catch (error) {
   core.setFailed(error instanceof Error ? error.message : JSON.stringify(error));
+}
+
+function getBool(a: any, defaultValue: boolean, ...keys: string[]): boolean {
+  try {
+    let value = a;
+    for (let i = 0; i < keys.length; i++) {
+      value = value[keys[i]];
+    }
+    if (value === undefined) {
+      return defaultValue;
+    }
+    return value === true;
+  } catch (_error) {
+    return defaultValue;
+  }
 }

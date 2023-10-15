@@ -1,7 +1,18 @@
 {
   "extends": [
-    "config:base",
+    ":dependencyDashboard",
+    ":semanticPrefixFixDepsChoreOthers",
+    ":autodetectPinVersions",
+    "group:monorepos",
+    "group:recommended",
+    "workarounds:all",
+
+    "helpers:pinGitHubActionDigests",
     "github>suzuki-shunsuke/renovate-config",
-    "github>aquaproj/aqua-renovate-config#1.2.0"
-  ]
+    "github>aquaproj/aqua-renovate-config#1.11.0",
+    "github>aquaproj/aqua-renovate-config:file#1.11.0(aqua/.*\\.yaml)"
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "branchConcurrentLimit": 0
 }

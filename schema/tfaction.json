@@ -6,15 +6,30 @@
   "description": "tfaction.yaml",
   "required": [],
   "properties": {
-    "aws_region": {
-      "$ref": "#/$defs/AWSRegion"
-    },
     "aws_assume_role_arn": {
       "$ref": "#/$defs/AWSAssumeRoleARN"
     },
+    "aws_region": {
+      "$ref": "#/$defs/AWSRegion"
+    },
+    "aws_secrets_manager": {
+      "$ref": "#/$defs/AWSSecretsManager"
+    },
 
-    "providers_lock_opts": {
-      "$ref": "#/$defs/TerraformProvidersLockOptions"
+    "drift_detection": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "If true, drift detection is enabled in the working directory",
+          "default": "false"
+        }
+      }
+    },
+
+    "envs": {
+      "$ref": "#/$defs/Envs"
     },
 
     "gcs_bucket_name_plan_file": {
@@ -23,8 +38,12 @@
     "gcp_workload_identity_provider": {
       "$ref": "#/$defs/GCPWorkloadIdentityProvider"
     },
-    "gcs_bucket_name_plan_file": {
-      "$ref": "#/$defs/GCSBucketNamePlanFile"
+    "gcs_bucket_name_tfmigrate_history": {
+      "$ref": "#/$defs/GCSBucketNameTfmigrateHistory"
+    },
+
+    "providers_lock_opts": {
+      "$ref": "#/$defs/TerraformProvidersLockOptions"
     },
 
     "s3_bucket_name_plan_file": {
@@ -36,13 +55,6 @@
 
     "secrets": {
       "$ref": "#/$defs/Secrets"
-    },
-    "aws_secrets_manager": {
-      "$ref": "#/$defs/AWSSecretsManager"
-    },
-
-    "envs": {
-      "$ref": "#/$defs/Envs"
     },
 
     "terraform_plan_config": {
@@ -87,6 +99,10 @@
     "GCSBucketNamePlanFile": {
       "type": "string",
       "description": "GCS Bucket Name to store Terraform Plan files"
+    },
+    "GCSBucketNameTfmigrateHistory": {
+      "type": "string",
+      "description": "GCS Bucket name to store tfmigrate History files"
     },
     "TemplateDir": {
       "type": "string",
